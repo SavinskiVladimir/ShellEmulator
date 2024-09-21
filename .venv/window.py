@@ -123,7 +123,8 @@ def execute_command(event):
 
             # вывод результата в текстовое поле
             output_text.configure(state='normal')
-            output_text.insert(tk.END, f"{output}\n")
+            if output != '':
+                output_text.insert(tk.END, f"{output}\n")
             output_text.configure(state='disabled')
     except Exception as e:
         output_text.configure(state='normal')
