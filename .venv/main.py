@@ -53,7 +53,7 @@ initialize_log_file() # создание пустого лог-файла
 with TarFile('files.tar', 'r') as files:
   while True:
 
-    prompt = f"{username}@{hostname} : {tarfile_path} (log: {logfile_path}) $ "
+    prompt = f"{username}@{hostname} $ "
     command = input(prompt) # ввод команды
     logger.info(command) # логгирование команды
 

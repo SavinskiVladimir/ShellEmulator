@@ -141,8 +141,7 @@ def execute_command(event):
 def update_prompt():
     username = os.getlogin() # получение имени пользователя
     hostname = os.environ['COMPUTERNAME'] # получение имени компьютера
-    tarfile_path = 'files.tar' # получение пути к виртуальной файловой системе
-    prompt = f"{username}@{hostname} : {tarfile_path} (log: {logfile_path}) $ " # составление текста приглашения
+    prompt = f"{username}@{hostname} $ " # составление текста приглашения
 
     output_text.configure(state='normal')
     output_text.insert(tk.END, prompt)  # добавляем приглашения
