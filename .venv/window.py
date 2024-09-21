@@ -31,57 +31,69 @@ def append_to_log(log_obj):
     with open(logfile_path, 'w', encoding='UTF-8') as f:  # запись обновленного json массива обратно в файл
         json.dump(log_data, f, ensure_ascii=False, indent=4)
 
-# создание обработчика для записи в файл
+# класс обработчика для записи в лог-файл
 class CustomHandler(logging.Handler):
     def emit(self, record):
-        log_obj = self.format(record)
-        append_to_log(log_obj)
+        log_obj = self.format(record) # форматирование записи к стандартному json формату
+        append_to_log(log_obj) # добавление записи в лог-файл
 
-handler = CustomHandler()
+handler = CustomHandler() # объект - обработчик для записи в лог-файл
 handler.setFormatter(JsonFormatter())
-logger = logging.getLogger('command_logger')
+logger = logging.getLogger('command_logger') # создание логгера
+# задание уровня логгирования, INFO - уровень для записи сообщений, сообщающих о нормальной работе
 logger.setLevel(logging.INFO)
 logger.addHandler(handler)
 
-current_directory = 'D:/дз/конф_управление/shellemulator/.venv/files.tar'
+current_directory = '' # задание текущей директории
 
 # Функция для обработки команд
 def execute_command(event):
-    command = command_entry.get()
-    logger.info(command)
+    global current_directory # добавление названия текущей директории в область видимости функции
 
-    # Добавляем введенную команду в текстовое поле
+    command = command_entry.get() # получение команды
+    logger.info(command) # логгирование команды
+
+    # добавление введенной команды в текстовое поле
     output_text.configure(state='normal')
-    output_text.insert(tk.END, f"{command}\n")  # Выводим команду
+    output_text.insert(tk.END, f"{command}\n")
     output_text.configure(state='disabled')
 
     try:
         with TarFile('files.tar', 'r') as files:
-            if command == 'ls':
-                output = "\n".join(member.name for member in files.getmembers())
-            elif command == "whoami":
+            if command == 'ls': # обработка команды ls
+                if current_directory == '': # вывод файлов из верхеней директории (файловой системы)
+                    output = "\n".join(member.name for member in files.getmembers() if member.name.find('/') == -1)
+                else: # вывод файлов из установленной директории
+                    output = "\n".join(member.name[len(current_directory) + 1:] for member in files.getmembers() if member.name.startswith(current_directory + '/'))
+            elif command == "whoami": # обработка команды whoami
                 output = os.getlogin()
-            elif command.startswith('cd'):
+            elif command.startswith('cd'): # обработка команды cd
                 path = command.split()[1]
                 if path == '..':  # переход на уровень вверх
-                    if current_directory:
+                    if current_directory: # если текущая директория непустая
                         current_directory = '/'.join(current_directory.split('/')[:-1])
-                else:  # Переход в указанный каталог
+                        if not current_directory:
+                            current_directory = ''
+                        output = '' # выводимого сообщения нет
+                else:  # переход в нужную директорию
                     new_directory = current_directory + '/' + path if current_directory else path
-                    # Проверка существования нового каталога в архиве
+                    # проверка существования новой директории
                     if any(member.name.startswith(new_directory + '/') for member in files.getmembers()):
                         current_directory = new_directory
+                        output = ''
                     else:
                         output = f"Ошибка: каталог '{path}' не найден."
-            elif command.startswith('tail'):
-                parts = command.split()
+            elif command.startswith('tail'): # обработка команды tail
+                parts = command.split() # разделение введённой команды на части
                 filename = parts[1] if len(parts) > 1 else None
-                lines_to_show = int(parts[2]) if (len(parts) > 2) else 10  # Значение по умолчанию
+                # задание количества строк для вывода, по умолчанию - 10
+                lines_to_show = int(parts[2]) if (len(parts) > 2) else 10
                 if filename:
                     try:
-                        content = files.extractfile(filename).read().decode()
+                        full_path = f"{current_directory}/{filename}" if current_directory else filename
+                        content = files.extractfile(full_path).read().decode()
                         lines = content.splitlines()
-                        last_lines = lines[-lines_to_show:]  # Получаем последние строки
+                        last_lines = lines[-lines_to_show:]  # получение последних строк
                         output = "\n".join(last_lines)
                     except KeyError:
                         output = f"Ошибка: файл '{filename}' не найден в архиве."
@@ -89,13 +101,14 @@ def execute_command(event):
                         output = f"Ошибка при чтении файла: {e}"
                 else:
                     output = "Ошибка: необходимо указать имя файла."
-            elif command == "exit":
+            elif command == "exit": # обработка команды exit
                 window.quit()
                 return
-            elif command == "history":
+            elif command == "history": # обработка команды history
                 try:
+                    # открытие лог-файла для чтения
                     with open(logfile_path, 'r', encoding='UTF-8') as log:
-                        data = json.load(log)
+                        data = json.load(log) # чтение данных из лог-файла
                         output = ''
                         for i in data:
                             output += str(i) + "\n"
@@ -108,7 +121,7 @@ def execute_command(event):
             else:
                 output = "Unknown command"
 
-            # Вывод результата в текстовое поле
+            # вывод результата в текстовое поле
             output_text.configure(state='normal')
             output_text.insert(tk.END, f"{output}\n")
             output_text.configure(state='disabled')
@@ -117,46 +130,47 @@ def execute_command(event):
         output_text.insert(tk.END, f"Error: {str(e)}\n")
         output_text.configure(state='disabled')
 
-    # Очистка поля ввода
+    # очистка поля ввода
     command_entry.delete(0, tk.END)
 
-    # Обновление текста с приглашением
+    # обновление текста с приглашением ко вводу
     update_prompt()
 
 
-# Функция для обновления приглашения к вводу
+# функция для обновления приглашения к вводу
 def update_prompt():
-    username = os.getlogin()
-    hostname = os.environ['COMPUTERNAME']
-    tarfile_path = 'files.tar'
-    prompt = f"{username}@{hostname} : {tarfile_path} (log: {logfile_path}) $ "
+    username = os.getlogin() # получение имени пользователя
+    hostname = os.environ['COMPUTERNAME'] # получение имени компьютера
+    tarfile_path = 'files.tar' # получение пути к виртуальной файловой системе
+    prompt = f"{username}@{hostname} : {tarfile_path} (log: {logfile_path}) $ " # составление текста приглашения
 
     output_text.configure(state='normal')
-    output_text.insert(tk.END, prompt)  # Добавляем новое приглашение
-    output_text.see(tk.END)  # Прокручиваем вниз
+    output_text.insert(tk.END, prompt)  # добавляем приглашения
+    output_text.see(tk.END)  # прокручтка вниз
     output_text.configure(state='disabled')
 
 
-# Создание основного окна
+# создание основного окна
 window = tk.Tk()
-window.title("Tar Emulator")
+window.title("Shell Emulator")
 
-# Создание текстового поля для вывода
-output_text = scrolledtext.ScrolledText(window, width=80, height=20, state='disabled')
+# создание текстового поля для вывода
+output_text = scrolledtext.ScrolledText(window, width=100, height=30, state='disabled')
 output_text.pack(pady=10)
 
-# Изначальное приглашение к вводу
+# изначальное приглашение ко вводу
 update_prompt()
 
-# Создание поля ввода для команд
-command_entry = tk.Entry(window, width=80)
+# создание поля ввода для команд
+command_entry = tk.Entry(window, width=100)
 command_entry.pack(pady=10)
 command_entry.bind('<Return>', execute_command)  # Привязка клавиши Enter к функции
 
-# Установка курсора в поле ввода при запуске
+# установка курсора в поле ввода при запуске
 command_entry.focus()
 
+# создание пустого лой-файла
 initialize_log_file()
 
-# Запуск основного цикла GUI
+# запуск основного цикла GUI
 window.mainloop()
