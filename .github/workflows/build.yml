@@ -21,7 +21,7 @@ jobs:
       - name: Install Xvfb
         run: sudo apt-get install -y xvfb  # Установка Xvfb для работы GUI
 
-      - name: Run Xvfb and execute window.py
+      - name: Run Xvfb and execute window_file_input.py
         run: |
           Xvfb :99 -screen 0 1024x768x24 &
           export DISPLAY=:99
