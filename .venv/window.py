@@ -7,7 +7,7 @@ import json
 
 # Настройка логгера
 
-class JsonFormatter(logging.Formatter):  # класс для внесения записи в лог-файл
+class JsonFormatter(logging.Formatter):  # класс для форматирования записи в json массив
     def __init__(self, username, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.username = username
