@@ -1,22 +1,42 @@
 [
     {
-        "time": "2024-09-21 12:02:43",
+        "time": "2024-09-22 10:05:58",
         "message": "ls",
-        "username": "Владимир Савинский"
+        "username": "user1"
     },
     {
-        "time": "2024-09-21 12:02:46",
+        "time": "2024-09-22 10:06:01",
         "message": "cd dir1",
-        "username": "Владимир Савинский"
+        "username": "user1"
     },
     {
-        "time": "2024-09-21 12:02:48",
+        "time": "2024-09-22 10:06:01",
         "message": "ls",
-        "username": "Владимир Савинский"
+        "username": "user1"
     },
     {
-        "time": "2024-09-21 12:02:50",
+        "time": "2024-09-22 10:06:10",
+        "message": "tail eggtowm.txt 2",
+        "username": "user1"
+    },
+    {
+        "time": "2024-09-22 10:06:20",
+        "message": "tail eggtown.txt 2",
+        "username": "user1"
+    },
+    {
+        "time": "2024-09-22 10:06:25",
+        "message": "whoami",
+        "username": "user1"
+    },
+    {
+        "time": "2024-09-22 10:06:31",
+        "message": "history",
+        "username": "user1"
+    },
+    {
+        "time": "2024-09-22 10:06:36",
         "message": "exit",
-        "username": "Владимир Савинский"
+        "username": "user1"
     }
 ]

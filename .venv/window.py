@@ -1,19 +1,21 @@
 import tkinter as tk
 from tkinter import scrolledtext
 from tarfile import TarFile, TarError
-import os
+import argparse
 import logging
 import json
 
 # Настройка логгера
-logfile_path = 'log.json'  # путь к лог-файлу
 
 class JsonFormatter(logging.Formatter):  # класс для внесения записи в лог-файл
+    def __init__(self, username, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.username = username
     def format(self, record):
         log_obj = {
             'time': self.formatTime(record, '%Y-%m-%d %H:%M:%S'),  # фиксация даты и времени
             'message': record.getMessage(),  # фиксация команды
-            'username': os.getlogin(),  # фиксация имени пользователя
+            'username': self.username,  # фиксация имени пользователя
         }
         return log_obj
 
@@ -37,8 +39,23 @@ class CustomHandler(logging.Handler):
         log_obj = self.format(record) # форматирование записи к стандартному json формату
         append_to_log(log_obj) # добавление записи в лог-файл
 
+# создание парсера для ввода параметров при запуске эмулятора из командной строки
+parser = argparse.ArgumentParser(description='Эмулятор оболочки ОС')
+# добавление получаемых аргументов
+parser.add_argument('username', type=str, help='Имя пользователя')
+parser.add_argument('hostname', type=str, help='Имя компльютера')
+parser.add_argument('tarfile_path', type=str, help='Путь к файловой системе')
+parser.add_argument('logfile_path', type=str, help='Путь к лог-файлу')
+
+# установка данных для вывода в привественном сообщении
+args = parser.parse_args()
+username = args.username # получение имени пользователя
+hostname = args.hostname # получение имени компьютера
+tarfile_path = args.tarfile_path # получение пути к архиву
+logfile_path = args.logfile_path # получение пути к лог-файлу
+
 handler = CustomHandler() # объект - обработчик для записи в лог-файл
-handler.setFormatter(JsonFormatter())
+handler.setFormatter(JsonFormatter(username))
 logger = logging.getLogger('command_logger') # создание логгера
 # задание уровня логгирования, INFO - уровень для записи сообщений, сообщающих о нормальной работе
 logger.setLevel(logging.INFO)
@@ -59,14 +76,14 @@ def execute_command(event):
     output_text.configure(state='disabled')
 
     try:
-        with TarFile('files.tar', 'r') as files:
+        with TarFile(tarfile_path, 'r') as files:
             if command == 'ls': # обработка команды ls
                 if current_directory == '': # вывод файлов из верхеней директории (файловой системы)
                     output = "\n".join(member.name for member in files.getmembers() if member.name.find('/') == -1)
                 else: # вывод файлов из установленной директории
                     output = "\n".join(member.name[len(current_directory) + 1:] for member in files.getmembers() if member.name.startswith(current_directory + '/'))
             elif command == "whoami": # обработка команды whoami
-                output = os.getlogin()
+                output = username
             elif command.startswith('cd'): # обработка команды cd
                 path = command.split()[1]
                 if path == '..':  # переход на уровень вверх
@@ -140,8 +157,9 @@ def execute_command(event):
 
 # функция для обновления приглашения к вводу
 def update_prompt():
-    username = os.getlogin() # получение имени пользователя
-    hostname = os.environ['COMPUTERNAME'] # получение имени компьютера
+    global username, hostname
+    username = username # получение имени пользователя
+    hostname = hostname # получение имени компьютера
     prompt = f"{username}@{hostname} $ " # составление текста приглашения
 
     output_text.configure(state='normal')
