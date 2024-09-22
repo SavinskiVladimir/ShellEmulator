@@ -80,7 +80,7 @@ with open("output.txt", 'w'):
 # функция для обработки команд
 def execute_command():
     global current_directory # добавление названия текущей директории в область видимости функции
-    with open("commands.txt", 'r') as input:
+    with open(".venv/commands.txt", 'r') as input:
             commands = input.readlines()
     try:
         with TarFile(tarfile_path, 'r') as files:
