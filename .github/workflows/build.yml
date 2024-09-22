@@ -18,6 +18,14 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Install Xvfb
+        run: sudo apt-get install -y xvfb  # Установка Xvfb для работы GUI
+
+      - name: Run Xvfb and execute window.py
+        run: |
+          Xvfb :99 -screen 0 1024x768x24 &  # Запуск виртуального дисплея
+          export DISPLAY=:99  # Установка переменной DISPLAY
+
       - name: Run window.py
         run: |
           python .venv/window.py "user_1" "computer_1" "ShellEmulator/.venv/files.tar" "ShellEmulator/.venv/json.log" 
