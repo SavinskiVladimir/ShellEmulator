@@ -1,0 +1,12 @@
+ls
+cd dir1
+ls
+tail curling.txt 5
+whoami
+history
+cd dir2
+tail sports_masters.txt 3
+tail web_page.html
+history
+whoami
+exit
