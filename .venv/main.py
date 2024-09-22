@@ -1,17 +1,19 @@
 from tarfile import TarFile, TarError
-import os
 import logging
 import json
+import argparse
 
 # Настройка логгера
-logfile_path = 'log.json'  # путь к лог-файлу
 
-class JsonFormatter(logging.Formatter):  # класс для внесения записи в лог-файл
+class JsonFormatter(logging.Formatter):  # класс для форматирования записи в json массив
+    def __init__(self, username, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.username = username
     def format(self, record):
         log_obj = {
             'time': self.formatTime(record, '%Y-%m-%d %H:%M:%S'),  # фиксация даты и времени
             'message': record.getMessage(),  # фиксация команды
-            'username': os.getlogin(),  # фиксация имени пользователя
+            'username': self.username,  # фиксация имени пользователя
         }
         return log_obj
 
@@ -35,22 +37,32 @@ class CustomHandler(logging.Handler):
         log_obj = self.format(record)
         append_to_log(log_obj)
 
+# создание парсера для ввода параметров при запуске эмулятора из командной строки
+parser = argparse.ArgumentParser(description='Эмулятор оболочки ОС')
+# добавление получаемых аргументов
+parser.add_argument('username', type=str, help='Имя пользователя')
+parser.add_argument('hostname', type=str, help='Имя компльютера')
+parser.add_argument('tarfile_path', type=str, help='Путь к файловой системе')
+parser.add_argument('logfile_path', type=str, help='Путь к лог-файлу')
+
+# установка данных для вывода в привественном сообщении
+args = parser.parse_args()
+username = args.username # получение имени пользователя
+hostname = args.hostname # получение имени компьютера
+tarfile_path = args.tarfile_path # получение пути к архиву
+logfile_path = args.logfile_path # получение пути к лог-файлу
+
 handler = CustomHandler()
-handler.setFormatter(JsonFormatter())
+handler.setFormatter(JsonFormatter(username))
 logger = logging.getLogger('command_logger')
 logger.setLevel(logging.INFO)
 logger.addHandler(handler)
-
-# установка данных для вывода в привественном сообщении
-username = os.getlogin()  # получение имени пользователя
-hostname = os.environ['COMPUTERNAME']  # получение имени компьютера
-tarfile_path = 'files.tar'  # получение пути к архиву
 
 current_directory = '' # установка текущей директории (вначале - сама файловая система является директорией)
 
 initialize_log_file() # создание пустого лог-файла
 
-with TarFile('files.tar', 'r') as files:
+with TarFile(tarfile_path, 'r') as files:
   while True:
 
     prompt = f"{username}@{hostname} $ "
