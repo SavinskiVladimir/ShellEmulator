@@ -26,3 +26,6 @@ jobs:
           Xvfb :99 -screen 0 1024x768x24 &
           export DISPLAY=:99
           python .venv/window_file_input.py "user_1" "computer_1" ".venv/files.tar" ".venv/json.log" 
+      - name: Check accurancy
+        run: |
+          diff expected_output.txt output.txt || echo "Output does not match expected results!"
