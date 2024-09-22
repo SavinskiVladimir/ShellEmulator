@@ -20,4 +20,4 @@ jobs:
 
       - name: Run window.py
         run: |
-          python ShellEmulator/.venv/window.py "user_1" "computer_1" "ShellEmulator/.venv/files.tar" "ShellEmulator/.venv/json.log" 
+          python .venv/window.py "user_1" "computer_1" "ShellEmulator/.venv/files.tar" "ShellEmulator/.venv/json.log" 
