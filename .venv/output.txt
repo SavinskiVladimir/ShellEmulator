@@ -1,0 +1,50 @@
+dir1
+dir2
+becklovka.txt
+beginner.py
+curling.txt
+eggtown.txt
+examples.txt
+ghakaramu.txt
+Команда-чемпион получала право
+выступать как женская сборная США
+по кёрлингу на чемпионате мира 2018,
+который состоялся в марте 2018 в
+городе Норт-Бей (провинция Онтарио, Канада).
+user_1
+{'time': '2024-09-22 15:13:19', 'message': 'ls\n', 'username': 'user_1'}
+{'time': '2024-09-22 15:13:19', 'message': 'cd dir1\n', 'username': 'user_1'}
+{'time': '2024-09-22 15:13:19', 'message': 'ls\n', 'username': 'user_1'}
+{'time': '2024-09-22 15:13:19', 'message': 'tail curling.txt 5\n', 'username': 'user_1'}
+{'time': '2024-09-22 15:13:19', 'message': 'whoami\n', 'username': 'user_1'}
+{'time': '2024-09-22 15:13:19', 'message': 'history\n', 'username': 'user_1'}
+
+dir1
+dir2
+52 мастерам спорта СССР международного класса
+было присвоено также звание заслуженного
+мастера спорта СССР (змс), пятерым — звание змс России.
+<body>
+    <h1>Статья</h1>
+    <p>
+        Научная статья — это публикация, в которой авторы излагают результаты своих исследований, 
+        анализируют данные и делают выводы на основе полученных результатов. Она должна быть 
+        структурирована, содержать ссылки на использованные источники и следовать определенным 
+        стандартам научного сообщества.
+    </p>
+</body>
+</html>
+{'time': '2024-09-22 15:13:19', 'message': 'ls\n', 'username': 'user_1'}
+{'time': '2024-09-22 15:13:19', 'message': 'cd dir1\n', 'username': 'user_1'}
+{'time': '2024-09-22 15:13:19', 'message': 'ls\n', 'username': 'user_1'}
+{'time': '2024-09-22 15:13:19', 'message': 'tail curling.txt 5\n', 'username': 'user_1'}
+{'time': '2024-09-22 15:13:19', 'message': 'whoami\n', 'username': 'user_1'}
+{'time': '2024-09-22 15:13:19', 'message': 'history\n', 'username': 'user_1'}
+{'time': '2024-09-22 15:13:19', 'message': 'cd ..\n', 'username': 'user_1'}
+{'time': '2024-09-22 15:13:19', 'message': 'ls\n', 'username': 'user_1'}
+{'time': '2024-09-22 15:13:19', 'message': 'cd dir2\n', 'username': 'user_1'}
+{'time': '2024-09-22 15:13:19', 'message': 'tail sports_masters.txt 3\n', 'username': 'user_1'}
+{'time': '2024-09-22 15:13:19', 'message': 'tail web_page.html\n', 'username': 'user_1'}
+{'time': '2024-09-22 15:13:19', 'message': 'history\n', 'username': 'user_1'}
+
+user_1
