@@ -25,4 +25,4 @@ jobs:
         run: |
           Xvfb :99 -screen 0 1024x768x24 &
           export DISPLAY=:99
-          python .venv/window.py "user_1" "computer_1" "ShellEmulator/.venv/files.tar" "ShellEmulator/.venv/json.log" 
+          python .venv/window.py "user_1" "computer_1" ".venv/files.tar" ".venv/json.log" 
